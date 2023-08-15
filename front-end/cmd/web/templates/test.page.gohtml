@@ -1,0 +1,58 @@
+{{template "base" .}}
+
+{{define "content" }}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="mt-5">Test microservices</h1>
+                <hr>
+                <a href="javascript:void(0)" id="brokenBtn" class="btn btn-outline-secondary">Test Broker</a>
+
+                <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
+                    <span class="text-muted">Output shows here...</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h4 class="mt-5">Sent</h4>
+                <div class="mt-1" style="outline: 1px solid silver; padding: 2em;">
+                    <pre id="payload"><span class="text-muted">Nothing sent yet...</span></pre>
+                </div>
+            </div>
+            <div class="col">
+                <h4 class="mt-5">Received</h4>
+                <div class="mt-1" style="outline: 1px solid silver; padding: 2em;">
+                    <pre id="received"><span class="text-muted">Nothing received yet...</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+    let brokerBtn = document.querySelector("#brokenBtn");
+    let output = document.querySelector("#output");
+    let sent = document.querySelector("#payload");
+    let received = document.querySelector("#received");
+    
+    brokerBtn.addEventListener("click", async () => {
+        const body = {
+            method: 'POST',
+        };
+
+        try {
+            const response = await fetch("http:\/\/localhost:8080", body);
+            let data = await response.json();
+            sent.innerHTML = "empty post request";
+            received.innerHTML = JSON.stringify(data, undefined, 4);
+            output.innerHTML = `<br><strong>Response from broker service</strong>: ${data.message}`;
+        } catch(e) {
+            console.error(e);
+        }
+        
+
+    });
+    </script>
+{{end}}
