@@ -5,7 +5,10 @@
 		},
 		{
 			"path": "broker-service"
-		}
+		},
+		{
+			"path": "authentication-service"
+		},
 	],
 	"settings": {}
 }
