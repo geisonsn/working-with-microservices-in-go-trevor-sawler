@@ -9,6 +9,7 @@
                 <a href="javascript:void(0)" id="brokenBtn" class="btn btn-outline-secondary">Test Broker</a>
                 <a href="javascript:void(0)" id="authBtn" class="btn btn-outline-secondary">Test Auth</a>
                 <a href="javascript:void(0)" id="loggerBtn" class="btn btn-outline-secondary">Test Logger</a>
+                <a href="javascript:void(0)" id="mailerBtn" class="btn btn-outline-secondary">Test Mailer</a>
 
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output shows here...</span>
@@ -37,6 +38,7 @@
     let brokerBtn = document.querySelector("#brokenBtn");
     let authBtn = document.querySelector("#authBtn");
     let loggerBtn = document.querySelector("#loggerBtn");
+    let mailerBtn = document.querySelector("#mailerBtn");
     let output = document.querySelector("#output");
     let sent = document.querySelector("#payload");
     let received = document.querySelector("#received");
@@ -96,6 +98,38 @@
             log: {
                 name: "Teste",
                 data: "logging",
+            }
+        }
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
+
+        const body = {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers
+        };
+
+        try {
+            const response = await fetch("http:\/\/localhost:8080/handle", body);
+            let data = await response.json();
+            sent.innerHTML = JSON.stringify(payload, undefined, 4);
+            received.innerHTML = JSON.stringify(data, undefined, 4);
+            output.innerHTML = `<br><strong>Response from broker service</strong>: ${data.message}`;
+        } catch(e) {
+            console.error(e);
+            output.innerHTML = `<br><strong>Response from broker service</strong>: ${e.message}`;
+        }
+    });
+
+    mailerBtn.addEventListener("click", async () => {
+        const payload = {
+            action: "mail",
+            mail: {
+                from: "me@example.com",
+                to: "you@there.com",
+                subject: "Test email",
+                message: "Hello world!"                
             }
         }
 

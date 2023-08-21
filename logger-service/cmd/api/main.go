@@ -27,7 +27,6 @@ type Config struct {
 }
 
 func main() {
-
 	mongoClient, err := connectToMongo()
 	if err != nil {
 		log.Panic(err)
