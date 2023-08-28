@@ -9,6 +9,8 @@
                 <a href="javascript:void(0)" id="brokenBtn" class="btn btn-outline-secondary">Test Broker</a>
                 <a href="javascript:void(0)" id="authBtn" class="btn btn-outline-secondary">Test Auth</a>
                 <a href="javascript:void(0)" id="loggerBtn" class="btn btn-outline-secondary">Test Logger</a>
+                <a href="javascript:void(0)" id="loggerViaRabbitBtn" class="btn btn-outline-secondary">Test Logger (RabbitMQ)</a>
+                <a href="javascript:void(0)" id="loggerViaRPCBtn" class="btn btn-outline-secondary">Test Logger (RPC)</a>
                 <a href="javascript:void(0)" id="mailerBtn" class="btn btn-outline-secondary">Test Mailer</a>
 
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
@@ -38,6 +40,8 @@
     let brokerBtn = document.querySelector("#brokenBtn");
     let authBtn = document.querySelector("#authBtn");
     let loggerBtn = document.querySelector("#loggerBtn");
+    let loggerViaRabbitBtn = document.querySelector("#loggerViaRabbitBtn");
+    let loggerViaRPCBtn = document.querySelector("#loggerViaRPCBtn");
     let mailerBtn = document.querySelector("#mailerBtn");
     let output = document.querySelector("#output");
     let sent = document.querySelector("#payload");
@@ -96,7 +100,67 @@
         const payload = {
             action: "log",
             log: {
-                name: "Teste",
+                name: "Logging using REST",
+                data: "logging",
+            }
+        }
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
+
+        const body = {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers
+        };
+
+        try {
+            const response = await fetch("http:\/\/localhost:8080/handle", body);
+            let data = await response.json();
+            sent.innerHTML = JSON.stringify(payload, undefined, 4);
+            received.innerHTML = JSON.stringify(data, undefined, 4);
+            output.innerHTML = `<br><strong>Response from broker service</strong>: ${data.message}`;
+        } catch(e) {
+            console.error(e);
+            output.innerHTML = `<br><strong>Response from broker service</strong>: ${e.message}`;
+        }
+    });
+
+    loggerViaRabbitBtn.addEventListener("click", async () => {
+        const payload = {
+            action: "logViaRabbit",
+            log: {
+                name: "Logging via RabbitMQ",
+                data: "logging",
+            }
+        }
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
+
+        const body = {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers
+        };
+
+        try {
+            const response = await fetch("http:\/\/localhost:8080/handle", body);
+            let data = await response.json();
+            sent.innerHTML = JSON.stringify(payload, undefined, 4);
+            received.innerHTML = JSON.stringify(data, undefined, 4);
+            output.innerHTML = `<br><strong>Response from broker service</strong>: ${data.message}`;
+        } catch(e) {
+            console.error(e);
+            output.innerHTML = `<br><strong>Response from broker service</strong>: ${e.message}`;
+        }
+    });
+
+    loggerViaRPCBtn.addEventListener("click", async () => {
+        const payload = {
+            action: "logViaRPC",
+            log: {
+                name: "Logging via RPC",
                 data: "logging",
             }
         }
