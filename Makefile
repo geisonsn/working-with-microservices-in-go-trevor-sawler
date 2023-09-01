@@ -5,7 +5,7 @@ LOGGER_BINARY=loggerApp
 MAILER_BINARY=mailerApp
 LISTENER_BINARY=listenerApp
 
-.DEFAULT_GOAL := startall
+.DEFAULT_GOAL := restart
 
 ## up: starts all containers in the background without forcing build
 up:
